@@ -1,2 +1,6 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+using Chess;
+
+var chessboard = new Chessboard();
+
+Console.WriteLine("Chessboard:");
+chessboard.Display();
