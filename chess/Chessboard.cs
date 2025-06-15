@@ -67,35 +67,91 @@ public class Chessboard
         {
             Console.Write("---+");
         }
-        Console.WriteLine();
     }
-    private void DisplayColumnNames()
+    private void DisplayColumnNames(bool fromWhite = true)
     {
         Console.Write("   ");
-        for (int i = 0; i < 8; i++)
+        var start = 0;
+        var end = 8;
+        var diff = 1;
+
+        if (!fromWhite)
+        {
+            start = 7;
+            end = -1;
+            diff = -1;
+        }
+
+        for (int i = start; i != end; i += diff)
         {
             Console.Write($" {(char)('a' + i)}  ");
         }
-        Console.WriteLine();
     }
-    private void DisplayRow(int r)
+    private void DisplayRow(int row, bool fromWhite = true)
     {
-        Console.Write($"{r + 1} |");
-        for (int c = 0; c < 8; c++)
+        Console.Write($"{row + 1} |");
+        var start = 0;
+        var end = 8;
+        var diff = 1;
+
+        if (!fromWhite)
         {
-            Console.Write($" {Squares[r * 8 + c]} |");
+            start = 7;
+            end = -1;
+            diff = -1;
         }
+
+        var col = start;
+
+        for (; col != end;)
+        {
+            Console.Write($" {Squares[row * 8 + col]} |");
+            col += diff;
+        }
+    }
+    public void Display(bool fromWhite = true)
+    {
+
+        for (int r = 0; r < 8; r++)
+        {
+            var row = fromWhite ? 7 - r : r;
+            DisplayLine();
+            Console.WriteLine();
+            DisplayRow(row, fromWhite);
+            Console.WriteLine();
+        }
+
+        DisplayLine();
+        Console.WriteLine();
+        DisplayColumnNames(fromWhite);
         Console.WriteLine();
     }
-    public void Display()
+
+    private void DisplayPadding()
+    {
+        Console.Write("   ");
+    }
+    public void DisplayBothSides()
     {
         for (int r = 0; r < 8; r++)
         {
             DisplayLine();
+            DisplayPadding();
+            DisplayLine();
+            Console.WriteLine();
+            DisplayRow(7 - r);
+            DisplayPadding();
             DisplayRow(r);
+            Console.WriteLine();
         }
 
         DisplayLine();
+        DisplayPadding();
+        DisplayLine();
+        Console.WriteLine();
         DisplayColumnNames();
+        DisplayPadding();
+        DisplayColumnNames(false);
+        Console.WriteLine();
     }
 }
