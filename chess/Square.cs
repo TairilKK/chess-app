@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Chess.Pieces;
 
 namespace Chess;
@@ -14,8 +13,10 @@ public class Square
 
     public Square(int row, int column, Piece? piece = null)
     {
-        Debug.Assert(row >= 0 && row <= 7);
-        Debug.Assert(column >= 0 && column <= 7);
+        if (row < 0 || row > 7 || column < 0 || column > 7)
+        {
+            throw new ArgumentOutOfRangeException("Row and Column must be between 0 and 7.");
+        }
 
         Row = row;
         Column = column;
