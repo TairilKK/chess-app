@@ -2,31 +2,31 @@ using Chess.Pieces;
 
 namespace Chess;
 
-public class Square
+public sealed class Square
 {
-    public int Index;
-    public int Row;
-    public int Column;
-    public bool White;
-    private string Name;
-    public Piece? Piece;
+  public int Index;
+  public int Row;
+  public int Column;
+  public bool White;
+  public string Name { get; private set; }
+  public Piece? Piece;
 
-    public Square(int row, int column, Piece? piece = null)
+  public Square(int row, int column, Piece? piece = null)
+  {
+    if (row < 0 || row > 7 || column < 0 || column > 7)
     {
-        if (row < 0 || row > 7 || column < 0 || column > 7)
-        {
-            throw new ArgumentOutOfRangeException("Row and Column must be between 0 and 7.");
-        }
-
-        Row = row;
-        Column = column;
-        White = (row + column) % 2 != 0;
-        Name = $"{(char)('a' + Column)}{Row + 1}";
-        Piece = piece;
+      throw new ArgumentOutOfRangeException("Row and Column must be between 0 and 7.");
     }
 
-    public override string ToString()
-    {
-        return Piece?.ToString() ?? " ";
-    }
+    Row = row;
+    Column = column;
+    White = (row + column) % 2 != 0;
+    Name = $"{(char)('a' + Column)}{Row + 1}";
+    Piece = piece;
+  }
+
+  public override string ToString()
+  {
+    return Piece?.ToString() ?? " ";
+  }
 }
