@@ -106,6 +106,7 @@ public class ChessboardTest
 
     square.Piece.Should().NotBeNull();
     square.Piece.GetType().Should().Be(piece);
+    square.Piece.ToString().Should().Be(white ? expectedPiece : expectedPiece.ToLower());
     square.Piece.White.Should().Be(white);
   }
 }

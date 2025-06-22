@@ -4,6 +4,28 @@ using FluentAssertions;
 
 namespace chess.Pieces.Tests;
 
+public class PawnTestDataGenerator
+{
+  public static IEnumerable<object[]> GetPseudoLegalMovesData()
+  {
+    var rows = new (int row, int direction)[] { (1, 1), (6, -1) };
+    foreach (var (row, dir) in rows)
+    {
+      for (int col = 0; col < 8; col++)
+      {
+        yield return new object[]
+        {
+          row, col, new List<Square>
+          {
+            new Square(row + 1 * dir, col), // Single move forward
+            new Square(row + 2 * dir, col)  // Double move forward
+          }
+        };
+      }
+    }
+  }
+}
+
 public class PawnTest
 {
   [Fact]
@@ -28,26 +50,25 @@ public class PawnTest
     pawn.ToString().Should().Be("p");
   }
 
-  [Fact]
-  public void GetPseudoLegalMoves_ForStartPosition_ReturnCorrectSquares()
+  [Theory]
+  [MemberData(nameof(PawnTestDataGenerator.GetPseudoLegalMovesData), MemberType = typeof(PawnTestDataGenerator))]
+  public void GetPseudoLegalMoves_ForStartPosition_ReturnCorrectSquares(int row, int column, List<Square> expectedMoves)
   {
-    // Arrange & Act
+    // Arrange
     var board = new Chessboard();
-    var rows = new (int row, int direction)[] { (1, 1), (6, -1) };
+    var square = board.GetSquare(row, column)!;
+    var pawn = square.Piece! as Pawn;
+
+    // Act
+    var moves = pawn!.GetPseudoLegalMoves(square, board);
 
     // Assert
-    foreach (var (row, direction) in rows)
+    moves.Should().NotBeNull();
+    moves.Count.Should().Be(expectedMoves.Count);
+    foreach (var expectedMove in expectedMoves)
     {
-      for (int i = 0; i < 8; i++)
-      {
-        var square = board.GetSquare(row, i);
-        var pawn = square!.Piece!;
-        var moves = pawn.GetPseudoLegalMoves(square, board);
-
-        moves.Should().NotBeEmpty();
-        moves.Should().Contain(board.GetSquare(row + 1 * direction, i)!);
-        moves.Should().Contain(board.GetSquare(row + 2 * direction, i)!);
-      }
+      moves.Should().Contain(m => m.Row == expectedMove.Row && m.Column == expectedMove.Column);
     }
   }
+
 }
