@@ -7,6 +7,7 @@ namespace chess.Tests;
 
 public class ChessboardTest
 {
+  // Chessboard constructor tests
   [Fact]
   public void Chessboard_ForCorrectPieceCount()
   {
@@ -107,6 +108,9 @@ public class ChessboardTest
     square.Piece.ToString().Should().Be(white ? expectedPiece : expectedPiece.ToLower());
     square.Piece.White.Should().Be(white);
   }
+  ////////////////////////////////
+
+  // PlacePiece tests
   [Theory]
   [MemberData(nameof(ChessboardTestDataGenerator.PlacePieceValidDataGenerator), MemberType = typeof(ChessboardTestDataGenerator))]
   public void PlacePiece_ForValidSquare_ShouldPlacePiece(int row, int col, Piece piece)
@@ -244,7 +248,9 @@ public class ChessboardTest
     act.Should().Throw<ArgumentException>()
       .WithMessage("Invalid position format. Use 'a1' to 'h8'.");
   }
+  ////////////////////////////////
 
+  // RemovePiece tests
   [Fact]
   public void RemovePiece_ForValidSquare_ShouldRemovePiece()
   {
@@ -332,4 +338,30 @@ public class ChessboardTest
         .WithMessage("Position is out of bounds. Use row and column between 0 and 7.");
     }
   }
+  ////////////////////////////////
+
+  // Move tests
+  [Theory]
+  [InlineData("e2", "e4")]
+  [InlineData("d2", "d4")]
+  [InlineData("g1", "f3")]
+  [InlineData("b1", "c3")]
+  public void Move_ForValidMove_ShouldMovePiece(string from, string to)
+  {
+    // Arrange
+    var board = new Chessboard();
+    var piece = board.GetSquare(from)!.Piece;
+
+    // Act
+    board.Move(from, to);
+
+    // Assert
+    var fromSquare = board.GetSquare(from);
+    var toSquare = board.GetSquare(to);
+
+    fromSquare!.Piece.Should().BeNull();
+    toSquare!.Piece.Should().NotBeNull();
+    toSquare.Piece.Should().Be(piece);
+  }
+
 }

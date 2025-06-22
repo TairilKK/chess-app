@@ -67,20 +67,53 @@ public class Chessboard
   {
     throw new NotImplementedException("Constructor with FEN string is not implemented yet.");
   }
-  // TODO: Implement the Move method
+
   private void Move(Square from, Square to)
   {
-    throw new NotImplementedException("Move method is not implemented yet.");
+    if (!Squares.Contains(from) || !Squares.Contains(to))
+    {
+      throw new ArgumentException("Both squares must be part of the chessboard.");
+    }
+    var piece = from.Piece ?? throw new ArgumentException("No piece to move from the specified square.");
+    var moves = piece.GetPseudoLegalMoves(from, this);
+    if (!moves.Contains(to))
+    {
+      throw new ArgumentException("Invalid move for the piece.");
+    }
+
+    // Capture
+    if (to.Piece is not null)
+    {
+      Pieces.Remove(to.Piece);
+    }
+    to.Piece = piece;
+    from.Piece = null;
   }
-  // TODO: Implement the Move method
   private void Move((int row, int col) from, (int row, int col) to)
   {
-    throw new NotImplementedException("Move method is not implemented yet.");
+    if (from.row < 0 || from.row > 7 || from.col < 0 || from.col > 7 ||
+       to.row < 0 || to.row > 7 || to.col < 0 || to.col > 7)
+    {
+      throw new ArgumentException("Position is out of bounds. Use row and column between 0 and 7.");
+    }
+
+    var fromSquare = GetSquare(from.row, from.col)!;
+    var toSquare = GetSquare(to.row, to.col)!;
+
+    Move(fromSquare, toSquare);
   }
-  // TODO: Implement the Move method
   public void Move(string from, string to)
   {
-    throw new NotImplementedException("Move method is not implemented yet.");
+    Regex regex = new Regex(@"^[a-h][1-8]$");
+    if (!regex.IsMatch(from) || !regex.IsMatch(to))
+    {
+      throw new ArgumentException("Invalid position format. Use 'a1' to 'h8'.");
+    }
+
+    var fromCoordinates = (from[1] - '1', from[0] - 'a');
+    var toCoordinates = (to[1] - '1', to[0] - 'a');
+
+    Move(fromCoordinates, toCoordinates);
   }
   public void RemovePiece(Square square)
   {
@@ -145,6 +178,19 @@ public class Chessboard
     int row = position[1] - '1';
     int column = position[0] - 'a';
     PlacePiece((row, column), piece);
+  }
+  public Square? GetSquare(string position)
+  {
+    Regex regex = new Regex(@"^[a-h][1-8]$");
+    if (!regex.IsMatch(position))
+    {
+      throw new ArgumentException("Invalid position format. Use 'a1' to 'h8'.");
+    }
+
+    int row = position[1] - '1';
+    int column = position[0] - 'a';
+
+    return GetSquare(row, column);
   }
   public Square? GetSquare(int row, int column)
   {
