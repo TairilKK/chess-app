@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Chess.Pieces;
 
 namespace Chess;
@@ -102,29 +103,38 @@ public class Chessboard
     throw new NotImplementedException("PlacePiece method is not implemented yet.");
   }
 
-  // TODO: Implement the PlacePiece method
-  private void PlacePiece(Square square, Piece piece)
+  public void PlacePiece(Square square, Piece piece)
   {
-    throw new NotImplementedException("PlacePiece method is not implemented yet.");
+    square.Piece = piece;
   }
 
-  // TODO: Implement the PlacePiece method
-  private void PlacePiece((int row, int col) position, Piece piece)
+  public void PlacePiece((int row, int col) position, Piece piece)
   {
-    throw new NotImplementedException("PlacePiece method is not implemented yet.");
+    var square = GetSquare(position.row, position.col);
+    if (square == null)
+    {
+      throw new ArgumentOutOfRangeException("Position is out of bounds. Use row and column between 0 and 7.");
+    }
+    PlacePiece(square!, piece);
   }
 
-  // TODO: Implement the PlacePiece method
-  private void PlacePiece(string position, Piece piece)
+  public void PlacePiece(string position, Piece piece)
   {
-    throw new NotImplementedException("PlacePiece method is not implemented yet.");
-  }
+    Regex regex = new Regex(@"^[a-h][1-8]$");
+    if (!regex.IsMatch(position))
+    {
+      throw new ArgumentException("Invalid position format. Use 'a1' to 'h8'.");
+    }
 
+    int row = position[1] - '1';
+    int column = position[0] - 'a';
+    PlacePiece((row, column), piece);
+  }
   public Square? GetSquare(int row, int column)
   {
     if (row < 0 || row > 7 || column < 0 || column > 7)
     {
-      return (Square?)null;
+      return null;
     }
     return Squares[row * 8 + column];
   }

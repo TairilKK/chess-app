@@ -1,4 +1,4 @@
-using System;
+using chess.DataGenerators.Tests;
 using Chess;
 using Chess.Pieces;
 using FluentAssertions;

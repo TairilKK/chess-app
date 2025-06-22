@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+using chess.Tests.DataGenerators;
 using Chess;
 using Chess.Pieces;
 using FluentAssertions;
@@ -108,5 +110,58 @@ public class ChessboardTest
     square.Piece.GetType().Should().Be(piece);
     square.Piece.ToString().Should().Be(white ? expectedPiece : expectedPiece.ToLower());
     square.Piece.White.Should().Be(white);
+  }
+
+
+  [Theory]
+  [MemberData(nameof(ChessboardTestDataGenerator.PlacePieceValidDataGenerator), MemberType = typeof(ChessboardTestDataGenerator))]
+  public void PlacePiece_ForValidSquare_ShouldPlacePiece(int row, int col, Piece piece)
+  {
+    // Arrange
+    var board = new Chessboard();
+    var square = board.GetSquare(row, col);
+
+    // Act
+    board.PlacePiece(square, piece);
+
+    // Assert
+    square.Piece.Should().NotBeNull();
+    square.Piece.GetType().Should().Be(piece.GetType());
+    square.Piece.Should().Be(piece);
+  }
+
+  [Theory]
+  [MemberData(nameof(ChessboardTestDataGenerator.PlacePieceValidDataGenerator), MemberType = typeof(ChessboardTestDataGenerator))]
+  public void PlacePiece_ForValidCoordinates_ShouldPlacePiece(int row, int col, Piece piece)
+  {
+    // Arrange
+    var board = new Chessboard();
+    var square = board.GetSquare(row, col);
+
+    // Act
+    board.PlacePiece((row, col), piece);
+
+    // Assert
+    square.Piece.Should().NotBeNull();
+    square.Piece.GetType().Should().Be(piece.GetType());
+    square.Piece.Should().Be(piece);
+  }
+
+  [Theory]
+  [MemberData(nameof(ChessboardTestDataGenerator.PlacePieceValidDataGenerator), MemberType = typeof(ChessboardTestDataGenerator))]
+  public void PlacePiece_ForValidName_ShouldPlacePiece(int row, int col, Piece piece)
+  {
+    // Arrange
+    var board = new Chessboard();
+    var square = board.GetSquare(row, col);
+    var name = square.Name;
+
+    // Act
+    board.PlacePiece(name, piece);
+
+    // Assert
+    square.Piece.Should().NotBeNull();
+    square.Piece.GetType().Should().Be(piece.GetType());
+    square.Piece.Should().Be(piece);
   }
 }

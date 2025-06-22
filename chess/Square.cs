@@ -4,12 +4,12 @@ namespace Chess;
 
 public sealed class Square
 {
-  public int Index;
-  public int Row;
-  public int Column;
-  public bool White;
+  public int Index { get; private set; }
+  public int Row { get; private set; }
+  public int Column { get; private set; }
+  public bool White { get; private set; }
   public string Name { get; private set; }
-  public Piece? Piece;
+  public Piece? Piece { get; set; }
 
   public Square(int row, int column, Piece? piece = null)
   {
