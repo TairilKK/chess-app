@@ -3,11 +3,53 @@ namespace Chess.Pieces;
 
 public class King : Piece
 {
+  public bool HasMoved { get; private set; } = false;
+
   public King(bool white) : base(white)
   {
   }
 
   //TODO: Queen side and King side castling
+  private bool CanCastleKingside(Chessboard board, Square currentSquare)
+  {
+    if (HasMoved) return false;
+
+    // Check if the squares between the king and rook are empty
+    int row = currentSquare.Row;
+    int col = currentSquare.Column;
+
+    // Check for King-side castling
+    Square? kingSideRook = board.GetSquare(row, 7); // H file
+    if (kingSideRook?.Piece is Rook rook && !rook.HasMoved)
+    {
+      for (int c = col + 1; c < 7; c++)
+      {
+        if (board.GetSquare(row, c)?.Piece != null) return false;
+      }
+      return true;
+    }
+    return false;
+  }
+  private bool CanCastleQueenside(Chessboard board, Square currentSquare)
+  {
+    if (HasMoved) return false;
+
+    // Check if the squares between the king and rook are empty
+    int row = currentSquare.Row;
+    int col = currentSquare.Column;
+
+    // Check for Queen-side castling
+    Square? queenSideRook = board.GetSquare(row, 0); // A file
+    if (queenSideRook?.Piece is Rook rook && !rook.HasMoved)
+    {
+      for (int c = col - 1; c > 0; c--)
+      {
+        if (board.GetSquare(row, c)?.Piece != null) return false;
+      }
+      return true;
+    }
+    return false;
+  }
   public override List<Square> GetPseudoLegalMoves(Square currentSquare, Chessboard board)
   {
     int r = currentSquare.Row;

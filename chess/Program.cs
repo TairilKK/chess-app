@@ -3,19 +3,6 @@ using Chess;
 
 var chessboard = new Chessboard();
 
-/*
-Console.WriteLine("Chessboard from white:");
-Console.WriteLine(chessboard.WhiteSideToString());
-
-
-Console.WriteLine("Chessboard from black:");
-Console.WriteLine(chessboard.BlackSideToString());
-
-
-Console.WriteLine("Chessboard from both sides:");
-Console.WriteLine(chessboard);
-*/
-
 string pgn = @"
 1. e2-e4 c7-c5 2. Ng1-f3 d7-d6 3. d2-d4 c5xd4 4. Nf3xd4 Ng8-f6 5. Nb1-c3 a7-a6
 ";
