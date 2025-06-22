@@ -105,15 +105,19 @@ public class Chessboard
 
   public void PlacePiece(Square square, Piece piece)
   {
+    if (!Squares.Contains(square))
+    {
+      throw new ArgumentException("Square is not part of the chessboard.");
+    }
     square.Piece = piece;
   }
 
   public void PlacePiece((int row, int col) position, Piece piece)
   {
     var square = GetSquare(position.row, position.col);
-    if (square == null)
+    if (square is null)
     {
-      throw new ArgumentOutOfRangeException("Position is out of bounds. Use row and column between 0 and 7.");
+      throw new ArgumentException("Position is out of bounds. Use row and column between 0 and 7.");
     }
     PlacePiece(square!, piece);
   }

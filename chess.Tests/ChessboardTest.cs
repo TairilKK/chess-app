@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using chess.Tests.DataGenerators;
 using Chess;
 using Chess.Pieces;
@@ -119,7 +118,7 @@ public class ChessboardTest
   {
     // Arrange
     var board = new Chessboard();
-    var square = board.GetSquare(row, col);
+    var square = board.GetSquare(row, col)!;
 
     // Act
     board.PlacePiece(square, piece);
@@ -130,13 +129,41 @@ public class ChessboardTest
     square.Piece.Should().Be(piece);
   }
 
+  [Fact]
+  public void PlacePiece_ForNonValidSquare_ShouldThrowArgumentsException()
+  {
+    // Arrange
+    var board = new Chessboard();
+    var random = new Random();
+    for (int n = 0; n < 100; n++)
+    {
+      var square = new Square(random.Next(0, 8), random.Next(0, 8));
+      Piece piece = random.Next(0, 6) switch
+      {
+        0 => new Rook(random.Next(0, 2) == 0),
+        1 => new Knight(random.Next(0, 2) == 0),
+        2 => new Bishop(random.Next(0, 2) == 0),
+        3 => new Queen(random.Next(0, 2) == 0),
+        4 => new Pawn(random.Next(0, 2) == 0),
+        _ => new King(random.Next(0, 2) == 0)
+      };
+
+      // Act
+      Action act = () => board.PlacePiece(square, piece);
+
+      // Assert
+      act.Should().Throw<ArgumentException>()
+        .WithMessage("Square is not part of the chessboard.");
+    }
+  }
+
   [Theory]
   [MemberData(nameof(ChessboardTestDataGenerator.PlacePieceValidDataGenerator), MemberType = typeof(ChessboardTestDataGenerator))]
   public void PlacePiece_ForValidCoordinates_ShouldPlacePiece(int row, int col, Piece piece)
   {
     // Arrange
     var board = new Chessboard();
-    var square = board.GetSquare(row, col);
+    var square = board.GetSquare(row, col)!;
 
     // Act
     board.PlacePiece((row, col), piece);
@@ -148,12 +175,36 @@ public class ChessboardTest
   }
 
   [Theory]
+  [InlineData(-1, 0)]
+  [InlineData(-17, 0)]
+  [InlineData(8, 0)]
+  [InlineData(98, 0)]
+  [InlineData(0, -1)]
+  [InlineData(0, -16)]
+  [InlineData(0, 8)]
+  [InlineData(0, 989)]
+  [InlineData(8, 8)]
+  [InlineData(-8, 18)]
+  public void PlacePiece_ForNonValidCoordinates_ShouldThrowArgumentsException(int row, int col)
+  {
+    // Arrange
+    var board = new Chessboard();
+
+    // Act
+    Action act = () => board.PlacePiece((row, col), new Pawn(true));
+
+    // Assert
+    act.Should().Throw<ArgumentException>()
+      .WithMessage("Position is out of bounds. Use row and column between 0 and 7.");
+  }
+
+  [Theory]
   [MemberData(nameof(ChessboardTestDataGenerator.PlacePieceValidDataGenerator), MemberType = typeof(ChessboardTestDataGenerator))]
   public void PlacePiece_ForValidName_ShouldPlacePiece(int row, int col, Piece piece)
   {
     // Arrange
     var board = new Chessboard();
-    var square = board.GetSquare(row, col);
+    var square = board.GetSquare(row, col)!;
     var name = square.Name;
 
     // Act
@@ -163,5 +214,25 @@ public class ChessboardTest
     square.Piece.Should().NotBeNull();
     square.Piece.GetType().Should().Be(piece.GetType());
     square.Piece.Should().Be(piece);
+  }
+
+  [Theory]
+  [InlineData("abc")]
+  [InlineData("z1")]
+  [InlineData("l1")]
+  [InlineData("a10")]
+  [InlineData("a9")]
+  [InlineData("a0")]
+  public void PlacePiece_ForNonValidName_ShouldThrowArgumentsException(string name)
+  {
+    // Arrange
+    var board = new Chessboard();
+
+    // Act
+    Action act = () => board.PlacePiece(name, new Pawn(true));
+
+    // Assert
+    act.Should().Throw<ArgumentException>()
+      .WithMessage("Invalid position format. Use 'a1' to 'h8'.");
   }
 }
