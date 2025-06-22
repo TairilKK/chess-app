@@ -67,7 +67,7 @@ public class Chessboard
   {
     throw new NotImplementedException("Constructor with FEN string is not implemented yet.");
   }
-
+  // TODO: Special moves
   private void Move(Square from, Square to)
   {
     if (!Squares.Contains(from) || !Squares.Contains(to))
@@ -300,7 +300,7 @@ public class Chessboard
 
       bothBoardString += RowToString(7 - r);
       bothBoardString += Padding();
-      bothBoardString += RowToString(r);
+      bothBoardString += RowToString(r, false);
       bothBoardString += '\n';
     }
 
