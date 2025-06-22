@@ -61,6 +61,65 @@ public class Chessboard
     }
   }
 
+  // TODO: Implement the constructor that accepts a FEN string
+  public Chessboard(string fen)
+  {
+    throw new NotImplementedException("Constructor with FEN string is not implemented yet.");
+  }
+
+  // TODO: Implement the Move method
+  private void Move(Square from, Square to)
+  {
+    throw new NotImplementedException("Move method is not implemented yet.");
+  }
+
+  // TODO: Implement the Move method
+  private void Move((int row, int col) from, (int row, int col) to)
+  {
+    throw new NotImplementedException("Move method is not implemented yet.");
+  }
+
+  // TODO: Implement the Move method
+  public void Move(string from, string to)
+  {
+    throw new NotImplementedException("Move method is not implemented yet.");
+  }
+  // TODO: Implement the RemovePiece method
+  private void RemovePiece(Square square, Piece piece)
+  {
+    throw new NotImplementedException("PlacePiece method is not implemented yet.");
+  }
+
+  // TODO: Implement the RemovePiece method
+  private void RemovePiece((int row, int col) position, Piece piece)
+  {
+    throw new NotImplementedException("PlacePiece method is not implemented yet.");
+  }
+
+  // TODO: Implement the RemovePiece method
+  private void RemovePiece(string position, Piece piece)
+  {
+    throw new NotImplementedException("PlacePiece method is not implemented yet.");
+  }
+
+  // TODO: Implement the PlacePiece method
+  private void PlacePiece(Square square, Piece piece)
+  {
+    throw new NotImplementedException("PlacePiece method is not implemented yet.");
+  }
+
+  // TODO: Implement the PlacePiece method
+  private void PlacePiece((int row, int col) position, Piece piece)
+  {
+    throw new NotImplementedException("PlacePiece method is not implemented yet.");
+  }
+
+  // TODO: Implement the PlacePiece method
+  private void PlacePiece(string position, Piece piece)
+  {
+    throw new NotImplementedException("PlacePiece method is not implemented yet.");
+  }
+
   public Square? GetSquare(int row, int column)
   {
     if (row < 0 || row > 7 || column < 0 || column > 7)
@@ -69,17 +128,18 @@ public class Chessboard
     }
     return Squares[row * 8 + column];
   }
-  private void DisplayLine()
+  private string LineToString()
   {
-    Console.Write("  +");
+    var line = "  +";
     for (int i = 0; i < 8; i++)
     {
-      Console.Write("---+");
+      line += "---+";
     }
+    return line;
   }
-  private void DisplayColumnNames(bool fromWhite = true)
+  private string ColumnNamesToString(bool fromWhite = true)
   {
-    Console.Write("   ");
+    var columnNames = "   ";
     var start = 0;
     var end = 8;
     var diff = 1;
@@ -93,12 +153,14 @@ public class Chessboard
 
     for (int i = start; i != end; i += diff)
     {
-      Console.Write($" {(char)('a' + i)}  ");
+      columnNames += $" {(char)('a' + i)}  ";
     }
+
+    return columnNames;
   }
-  private void DisplayRow(int row, bool fromWhite = true)
+  private string RowToString(int row, bool fromWhite = true)
   {
-    Console.Write($"{row + 1} |");
+    var rowString = $"{row + 1} |";
     var start = 0;
     var end = 8;
     var diff = 1;
@@ -114,53 +176,72 @@ public class Chessboard
 
     for (; col != end;)
     {
-      Console.Write($" {Squares[row * 8 + col]} |");
+      rowString += $" {Squares[row * 8 + col]} |";
       col += diff;
     }
+
+    return rowString;
   }
-  // TODO: Change to Tostring()
-  public void Display(bool fromWhite = true)
+  private string Display(bool fromWhite = true)
   {
+    var boardString = "";
 
     for (int r = 0; r < 8; r++)
     {
       var row = fromWhite ? 7 - r : r;
-      DisplayLine();
-      Console.WriteLine();
-      DisplayRow(row, fromWhite);
-      Console.WriteLine();
+      boardString += LineToString();
+      boardString += "\n";
+
+      boardString += RowToString(row, fromWhite);
+      boardString += "\n";
     }
 
-    DisplayLine();
-    Console.WriteLine();
-    DisplayColumnNames(fromWhite);
-    Console.WriteLine();
+    boardString += LineToString();
+    boardString += "\n";
+    boardString += ColumnNamesToString(fromWhite);
+    boardString += "\n";
+
+    return boardString;
   }
-  private void DisplayPadding()
+  public string BlackSideToString()
   {
-    Console.Write("   ");
+    return Display(false);
   }
-  public void DisplayBothSides()
+  public string WhiteSideToString()
   {
+    return Display(true);
+  }
+  private string Padding()
+  {
+    return "   ";
+  }
+  public override string ToString()
+  {
+    var bothBoardString = "";
+
     for (int r = 0; r < 8; r++)
     {
-      DisplayLine();
-      DisplayPadding();
-      DisplayLine();
-      Console.WriteLine();
-      DisplayRow(7 - r);
-      DisplayPadding();
-      DisplayRow(r);
-      Console.WriteLine();
+      bothBoardString += LineToString();
+      bothBoardString += Padding();
+      bothBoardString += LineToString();
+      bothBoardString += '\n';
+
+      bothBoardString += RowToString(7 - r);
+      bothBoardString += Padding();
+      bothBoardString += RowToString(r);
+      bothBoardString += '\n';
     }
 
-    DisplayLine();
-    DisplayPadding();
-    DisplayLine();
-    Console.WriteLine();
-    DisplayColumnNames();
-    DisplayPadding();
-    DisplayColumnNames(false);
-    Console.WriteLine();
+    bothBoardString += LineToString();
+    bothBoardString += Padding();
+    bothBoardString += LineToString();
+    bothBoardString += '\n';
+    bothBoardString += ColumnNamesToString();
+    bothBoardString += Padding();
+    bothBoardString += ColumnNamesToString(false);
+    bothBoardString += '\n';
+
+    return bothBoardString;
   }
+
 }

@@ -3,11 +3,11 @@ using Chess;
 var chessboard = new Chessboard();
 
 Console.WriteLine("Chessboard from white:");
-chessboard.Display();
+Console.WriteLine(chessboard.WhiteSideToString());
 
 
 Console.WriteLine("Chessboard from black:");
-chessboard.Display(false);
+Console.WriteLine(chessboard.BlackSideToString());
 
 Console.WriteLine("Chessboard from both sides:");
-chessboard.DisplayBothSides();
+Console.WriteLine(chessboard);
