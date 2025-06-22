@@ -19,7 +19,6 @@ public class ChessboardTest
     // Assert
     piecesCount.Should().Be(32);
   }
-
   [Fact]
   public void Chessboard_ForCorrectSquareCount()
   {
@@ -32,7 +31,6 @@ public class ChessboardTest
     // Assert
     squaresCount.Should().Be(64);
   }
-
   [Fact]
   public void Chessboard_ForCorrectSquareNames()
   {
@@ -50,7 +48,6 @@ public class ChessboardTest
       }
     }
   }
-
   [Theory]
   [InlineData(0, 0, true, "R")]
   [InlineData(0, 7, true, "R")]
@@ -110,8 +107,6 @@ public class ChessboardTest
     square.Piece.ToString().Should().Be(white ? expectedPiece : expectedPiece.ToLower());
     square.Piece.White.Should().Be(white);
   }
-
-
   [Theory]
   [MemberData(nameof(ChessboardTestDataGenerator.PlacePieceValidDataGenerator), MemberType = typeof(ChessboardTestDataGenerator))]
   public void PlacePiece_ForValidSquare_ShouldPlacePiece(int row, int col, Piece piece)
@@ -128,7 +123,6 @@ public class ChessboardTest
     square.Piece.GetType().Should().Be(piece.GetType());
     square.Piece.Should().Be(piece);
   }
-
   [Fact]
   public void PlacePiece_ForNonValidSquare_ShouldThrowArgumentsException()
   {
@@ -156,6 +150,24 @@ public class ChessboardTest
         .WithMessage("Square is not part of the chessboard.");
     }
   }
+  [Fact]
+  public void PlacePiece_ForPieceAlredyOnBoard_ShouldThrowArgumentsException()
+  {
+    // Arrange
+    var board = new Chessboard();
+    var random = new Random();
+    foreach (var piece in board.Pieces)
+    {
+      Square square = board.Squares.Where(s => s.Piece == piece).First();
+
+      // Act
+      Action act = () => board.PlacePiece(square, piece);
+
+      // Assert
+      act.Should().Throw<ArgumentException>()
+        .WithMessage("Piece is already on the board.");
+    }
+  }
 
   [Theory]
   [MemberData(nameof(ChessboardTestDataGenerator.PlacePieceValidDataGenerator), MemberType = typeof(ChessboardTestDataGenerator))]
@@ -173,7 +185,6 @@ public class ChessboardTest
     square.Piece.GetType().Should().Be(piece.GetType());
     square.Piece.Should().Be(piece);
   }
-
   [Theory]
   [InlineData(-1, 0)]
   [InlineData(-17, 0)]
@@ -197,7 +208,6 @@ public class ChessboardTest
     act.Should().Throw<ArgumentException>()
       .WithMessage("Position is out of bounds. Use row and column between 0 and 7.");
   }
-
   [Theory]
   [MemberData(nameof(ChessboardTestDataGenerator.PlacePieceValidDataGenerator), MemberType = typeof(ChessboardTestDataGenerator))]
   public void PlacePiece_ForValidName_ShouldPlacePiece(int row, int col, Piece piece)
@@ -215,7 +225,6 @@ public class ChessboardTest
     square.Piece.GetType().Should().Be(piece.GetType());
     square.Piece.Should().Be(piece);
   }
-
   [Theory]
   [InlineData("abc")]
   [InlineData("z1")]
@@ -234,5 +243,93 @@ public class ChessboardTest
     // Assert
     act.Should().Throw<ArgumentException>()
       .WithMessage("Invalid position format. Use 'a1' to 'h8'.");
+  }
+
+  [Fact]
+  public void RemovePiece_ForValidSquare_ShouldRemovePiece()
+  {
+    // Arrange
+    var board = new Chessboard();
+
+    foreach (var square in board.Squares)
+    {
+      if (square.Piece is not null)
+      {
+        // Act
+        board.RemovePiece(square);
+
+        // Assert
+        board.Pieces.Should().NotContain(square.Piece);
+        square.Piece.Should().BeNull();
+      }
+    }
+    board.Pieces.Should().BeEmpty();
+  }
+  [Fact]
+  public void RemovePiece_ForNonValidSquare_ShouldThrowException()
+  {
+    // Arrange
+    var board = new Chessboard();
+
+    for (int n = 0; n < 100; n++)
+    {
+      var square = new Square(new Random().Next(0, 8), new Random().Next(0, 8));
+      Piece piece = new Pawn(new Random().Next(0, 2) == 0);
+
+      // Act
+      Action act = () => board.RemovePiece(square);
+
+      // Assert
+      act.Should().Throw<ArgumentException>()
+        .WithMessage("Square is not part of the chessboard.");
+    }
+  }
+  [Fact]
+  public void RemovePiece_ForValidCoordinates_ShouldRemovePiece()
+  {
+    // Arrange
+    var board = new Chessboard();
+
+    foreach (var square in board.Squares)
+    {
+      if (square.Piece is not null)
+      {
+        // Act
+        board.RemovePiece((square.Row, square.Column));
+
+        // Assert
+        board.Pieces.Should().NotContain(square.Piece);
+        square.Piece.Should().BeNull();
+      }
+    }
+    board.Pieces.Should().BeEmpty();
+  }
+
+  [Theory]
+  [InlineData(-1, 0)]
+  [InlineData(-17, 0)]
+  [InlineData(8, 0)]
+  [InlineData(98, 0)]
+  [InlineData(0, -1)]
+  [InlineData(0, -16)]
+  [InlineData(0, 8)]
+  [InlineData(0, 989)]
+  [InlineData(8, 8)]
+  [InlineData(-8, 18)]
+  [InlineData(8, -8)]
+  public void RemovePiece_ForNonValidCoordinates_ShouldThrowException(int row, int col)
+  {
+    // Arrange
+    var board = new Chessboard();
+
+    for (int n = 0; n < 100; n++)
+    {
+      // Act
+      Action act = () => board.RemovePiece((row, col));
+
+      // Assert
+      act.Should().Throw<ArgumentException>()
+        .WithMessage("Position is out of bounds. Use row and column between 0 and 7.");
+    }
   }
 }

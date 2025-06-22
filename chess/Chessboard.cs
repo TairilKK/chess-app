@@ -67,51 +67,64 @@ public class Chessboard
   {
     throw new NotImplementedException("Constructor with FEN string is not implemented yet.");
   }
-
   // TODO: Implement the Move method
   private void Move(Square from, Square to)
   {
     throw new NotImplementedException("Move method is not implemented yet.");
   }
-
   // TODO: Implement the Move method
   private void Move((int row, int col) from, (int row, int col) to)
   {
     throw new NotImplementedException("Move method is not implemented yet.");
   }
-
   // TODO: Implement the Move method
   public void Move(string from, string to)
   {
     throw new NotImplementedException("Move method is not implemented yet.");
   }
-  // TODO: Implement the RemovePiece method
-  private void RemovePiece(Square square, Piece piece)
+  public void RemovePiece(Square square)
   {
-    throw new NotImplementedException("PlacePiece method is not implemented yet.");
+    if (!Squares.Contains(square))
+    {
+      throw new ArgumentException("Square is not part of the chessboard.");
+    }
+    var piece = square.Piece;
+    square.Piece = null;
+    Pieces.Remove(piece!);
   }
-
-  // TODO: Implement the RemovePiece method
-  private void RemovePiece((int row, int col) position, Piece piece)
+  public void RemovePiece((int row, int col) position)
   {
-    throw new NotImplementedException("PlacePiece method is not implemented yet.");
+    var square = GetSquare(position.row, position.col);
+    if (square is null)
+    {
+      throw new ArgumentException("Position is out of bounds. Use row and column between 0 and 7.");
+    }
+    RemovePiece(square!);
   }
-
-  // TODO: Implement the RemovePiece method
-  private void RemovePiece(string position, Piece piece)
+  public void RemovePiece(string position)
   {
-    throw new NotImplementedException("PlacePiece method is not implemented yet.");
-  }
+    Regex regex = new Regex(@"^[a-h][1-8]$");
+    if (!regex.IsMatch(position))
+    {
+      throw new ArgumentException("Invalid position format. Use 'a1' to 'h8'.");
+    }
 
+    int row = position[1] - '1';
+    int column = position[0] - 'a';
+    RemovePiece((row, column));
+  }
   public void PlacePiece(Square square, Piece piece)
   {
     if (!Squares.Contains(square))
     {
       throw new ArgumentException("Square is not part of the chessboard.");
     }
+    if (Pieces.Contains(piece))
+    {
+      throw new ArgumentException("Piece is already on the board.");
+    }
     square.Piece = piece;
   }
-
   public void PlacePiece((int row, int col) position, Piece piece)
   {
     var square = GetSquare(position.row, position.col);
@@ -121,7 +134,6 @@ public class Chessboard
     }
     PlacePiece(square!, piece);
   }
-
   public void PlacePiece(string position, Piece piece)
   {
     Regex regex = new Regex(@"^[a-h][1-8]$");
@@ -257,5 +269,4 @@ public class Chessboard
 
     return bothBoardString;
   }
-
 }
