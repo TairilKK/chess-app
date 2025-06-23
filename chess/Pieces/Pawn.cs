@@ -3,7 +3,7 @@ namespace Chess.Pieces;
 
 public class Pawn : Piece
 {
-  bool IsFirstMove = true;
+  public bool IsFirstMove { get; set; } = true;
   public Pawn(bool white) : base(white)
   {
   }
@@ -46,6 +46,28 @@ public class Pawn : Piece
       moves.Add(captureRightSquare);
     }
 
+    // En passant
+    if (board.LastMove.from != null && board.LastMove.to != null)
+    {
+      var lastFrom = board.LastMove.from;
+      var lastTo = board.LastMove.to;
+
+      // Is last move a pawn
+      if (lastFrom.Piece is Pawn lastPawn && lastPawn.White != this.White &&
+          Math.Abs(lastFrom.Row - lastTo.Row) == 2 && lastFrom.Column == lastTo.Column)
+      {
+        // Czy pionek jest obok nas
+        if (Math.Abs(lastTo.Column - c) == 1 && lastTo.Row == r)
+        {
+          // Pole za pionkiem przeciwnika
+          var enPassantSquare = board.GetSquare(r + direction, lastTo.Column);
+          if (enPassantSquare != null && enPassantSquare.Piece == null)
+          {
+            moves.Add(enPassantSquare);
+          }
+        }
+      }
+    }
     return moves;
   }
 

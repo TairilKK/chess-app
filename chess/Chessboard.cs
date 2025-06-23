@@ -8,6 +8,7 @@ public class Chessboard
   public List<Piece> Pieces { get; set; }
   public Square[] Squares { get; set; }
   private bool _whiteToMove = true;
+  public (Square from, Square to) LastMove = (null!, null!);
   public Chessboard()
   {
     Pieces = new List<Piece>();
@@ -71,6 +72,7 @@ public class Chessboard
   // ! Special moves
   // TODO: Implement en passant
   // TODO: Implement promotion
+  // TODO: Check and checkmate detection
   private void Move(Square from, Square to)
   {
     if (!Squares.Contains(from) || !Squares.Contains(to))
@@ -102,6 +104,7 @@ public class Chessboard
         rookFrom.Piece = null;
         if (rookTo.Piece is Rook rook) rook.HasMoved = true;
       }
+
       // Queenside
       else if (to.Column < from.Column)
       {
@@ -114,6 +117,24 @@ public class Chessboard
       king.HasMoved = true;
     }
 
+
+    if (piece is Pawn pawn)
+    {
+      pawn.IsFirstMove = false;
+
+      // En passant
+      if (from.Column != to.Column)
+      {
+        int direction = piece.White ? -1 : 1;
+        var capturedPawnSquare = GetSquare(to.Row + direction, to.Column);
+        if (capturedPawnSquare?.Piece is Pawn)
+        {
+          Pieces.Remove(capturedPawnSquare.Piece);
+          capturedPawnSquare.Piece = null;
+        }
+      }
+    }
+
     // Capture
     if (to.Piece is not null)
     {
@@ -122,6 +143,7 @@ public class Chessboard
     to.Piece = piece;
     from.Piece = null;
     _whiteToMove = !_whiteToMove;
+    LastMove = (from, to);
   }
   private void Move((int row, int col) from, (int row, int col) to)
   {
