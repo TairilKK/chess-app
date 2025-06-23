@@ -62,12 +62,14 @@ public class Chessboard
     }
   }
 
-  // TODO: Implement the constructor that accepts a FEN string
+  // * Implement the constructor that accepts a FEN string
   public Chessboard(string fen)
   {
     throw new NotImplementedException("Constructor with FEN string is not implemented yet.");
   }
-  // TODO: Special moves
+  // ! Special moves
+  // TODO: Implement en passant
+  // TODO: Implement promotion
   private void Move(Square from, Square to)
   {
     if (!Squares.Contains(from) || !Squares.Contains(to))

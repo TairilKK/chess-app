@@ -33,6 +33,19 @@ public class Pawn : Piece
       }
     }
 
+    // Capture moves
+    Square? captureLeftSquare = board.GetSquare(r + direction, c - 1);
+    if (captureLeftSquare is not null && captureLeftSquare.Piece is not null && captureLeftSquare.Piece.White != White)
+    {
+      moves.Add(captureLeftSquare);
+    }
+
+    Square? captureRightSquare = board.GetSquare(r + direction, c + 1);
+    if (captureRightSquare is not null && captureRightSquare.Piece is not null && captureRightSquare.Piece.White != White)
+    {
+      moves.Add(captureRightSquare);
+    }
+
     return moves;
   }
 
