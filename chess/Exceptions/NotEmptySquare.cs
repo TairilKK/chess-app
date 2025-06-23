@@ -2,7 +2,7 @@ using System;
 
 namespace chess.Exceptions;
 
-public class NotEmplySquare(string message) : Exception(message)
+public class NotEmptySquare(string message) : Exception(message)
 {
 
 }
