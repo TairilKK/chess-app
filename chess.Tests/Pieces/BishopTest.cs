@@ -26,5 +26,4 @@ public class BishopTest
     moves.Should().BeEmpty();
   }
 
-
 }

@@ -364,4 +364,72 @@ public class ChessboardTest
     toSquare.Piece.Should().Be(piece);
   }
 
+  [Theory]
+  [InlineData("e2", "e5")]
+  [InlineData("b1", "b3")]
+  [InlineData("a1", "a5")]
+  [InlineData("e1", "e2")]
+  public void Move_ForNonValidMove_ShouldThrowArgumentException(string from, string to)
+  {
+    // Arrange
+    var board = new Chessboard();
+    var piece = board.GetSquare(from)!.Piece;
+
+    // Act
+    Action act = () => board.Move(from, to);
+
+    // Assert
+    act.Should().Throw<ArgumentException>()
+      .WithMessage("Invalid move for the piece.");
+  }
+
+  // Special moves tests
+  // Castling tests
+  [Fact]
+  public void Move_ForQueenSideCastling_ShouldCastle()
+  {
+    // Arrange
+    var board = new Chessboard();
+    board.RemovePiece("d1"); // Remove white queen
+    board.RemovePiece("c1"); // Remove white bishop
+    board.RemovePiece("b1"); // Remove white knight
+
+    board.RemovePiece("d8"); // Remove black queen
+    board.RemovePiece("c8"); // Remove black bishop
+    board.RemovePiece("b8"); // Remove black knight
+
+    // Act
+    board.Move("e1", "c1"); // White queen side castling
+    board.Move("e8", "c8"); // Black queen side castling
+
+    // Assert
+    board.GetSquare("c1")!.Piece.Should().BeOfType<King>();
+    board.GetSquare("d1")!.Piece.Should().BeOfType<Rook>();
+
+    board.GetSquare("c8")!.Piece.Should().BeOfType<King>();
+    board.GetSquare("d8")!.Piece.Should().BeOfType<Rook>();
+  }
+
+  [Fact]
+  public void Move_ForKingSideCastling_ShouldCastle()
+  {
+    // Arrange
+    var board = new Chessboard();
+    board.RemovePiece("f1"); // Remove white bishop
+    board.RemovePiece("g1"); // Remove white knight
+
+    board.RemovePiece("f8"); // Remove black bishop
+    board.RemovePiece("g8"); // Remove black knight
+
+    // Act
+    board.Move("e1", "g1"); // White king side castling
+    board.Move("e8", "g8"); // Black king side castling
+
+    // Assert
+    board.GetSquare("g1")!.Piece.Should().BeOfType<King>();
+    board.GetSquare("f1")!.Piece.Should().BeOfType<Rook>();
+
+    board.GetSquare("g8")!.Piece.Should().BeOfType<King>();
+    board.GetSquare("f8")!.Piece.Should().BeOfType<Rook>();
+  }
 }
