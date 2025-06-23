@@ -8,9 +8,13 @@ public class Chessboard
   public List<Piece> Pieces { get; set; }
   public Square[] Squares { get; set; }
   private bool _whiteToMove = true;
+<<<<<<< HEAD
   public (Square from, Square to) LastMove = (null!, null!);
 
   public Chessboard(bool empty = false)
+=======
+  public Chessboard()
+>>>>>>> b63526b3f02ad2780714c78ff3d17b89009fde8d
   {
     Pieces = new List<Piece>();
     Squares = new Square[64];
@@ -157,7 +161,10 @@ public class Chessboard
     to.Piece = piece;
     from.Piece = null;
     _whiteToMove = !_whiteToMove;
+<<<<<<< HEAD
     LastMove = (from, to);
+=======
+>>>>>>> b63526b3f02ad2780714c78ff3d17b89009fde8d
   }
   private void Move((int row, int col) from, (int row, int col) to)
   {
