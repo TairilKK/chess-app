@@ -100,6 +100,12 @@ public class Chessboard
       throw new ArgumentException($"It's {color} turn to move.");
     }
 
+    if (piece.White != _whiteToMove)
+    {
+      var color = _whiteToMove ? "white" : "black";
+      throw new ArgumentException($"It's {color} turn to move.");
+    }
+
     var moves = piece.GetPseudoLegalMoves(from, this);
     if (!moves.Contains(to))
     {
