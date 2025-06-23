@@ -3,7 +3,7 @@ namespace Chess.Pieces;
 
 public class Rook : Piece
 {
-  public bool HasMoved { get; private set; } = false;
+  public bool HasMoved { get; set; } = false;
   public Rook(bool white) : base(white)
   {
   }

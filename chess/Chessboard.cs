@@ -81,6 +81,30 @@ public class Chessboard
       throw new ArgumentException("Invalid move for the piece.");
     }
 
+    // Castling
+    if (piece is King king && Math.Abs(to.Column - from.Column) == 2)
+    {
+      // Kingside
+      if (to.Column > from.Column)
+      {
+        var rookFrom = GetSquare(from.Row, 7)!;
+        var rookTo = GetSquare(from.Row, 5)!;
+        rookTo.Piece = rookFrom.Piece;
+        rookFrom.Piece = null;
+        if (rookTo.Piece is Rook rook) rook.HasMoved = true;
+      }
+      // Queenside
+      else if (to.Column < from.Column)
+      {
+        var rookFrom = GetSquare(from.Row, 0)!;
+        var rookTo = GetSquare(from.Row, 3)!;
+        rookTo.Piece = rookFrom.Piece;
+        rookFrom.Piece = null;
+        if (rookTo.Piece is Rook rook) rook.HasMoved = true;
+      }
+      king.HasMoved = true;
+    }
+
     // Capture
     if (to.Piece is not null)
     {

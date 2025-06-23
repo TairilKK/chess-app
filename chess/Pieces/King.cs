@@ -3,7 +3,7 @@ namespace Chess.Pieces;
 
 public class King : Piece
 {
-  public bool HasMoved { get; private set; } = false;
+  public bool HasMoved { get; set; } = false;
 
   public King(bool white) : base(white)
   {
@@ -77,6 +77,21 @@ public class King : Piece
         }
       }
     }
+
+    // Checks for castling
+    if (CanCastleKingside(board, currentSquare))
+    {
+      var kingsideCastleSquare = board.GetSquare(r, c + 2);
+      if (kingsideCastleSquare != null)
+        moves.Add(kingsideCastleSquare);
+    }
+    if (CanCastleQueenside(board, currentSquare))
+    {
+      var queensideCastleSquare = board.GetSquare(r, c - 2);
+      if (queensideCastleSquare != null)
+        moves.Add(queensideCastleSquare);
+    }
+
     return moves;
   }
 
