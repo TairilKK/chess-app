@@ -432,4 +432,97 @@ public class ChessboardTest
     board.GetSquare("g8")!.Piece.Should().BeOfType<King>();
     board.GetSquare("f8")!.Piece.Should().BeOfType<Rook>();
   }
+
+  [Fact]
+  public void Move_ForNonValidKingSideCastling_ShouldThrowArgumentException()
+  {
+    // Arrange
+    var board = new Chessboard();
+    board.RemovePiece("g1"); // Remove white knight
+
+    // Act
+    Action act = () => board.Move("e1", "g1"); // Attempt king side castling with blocked path
+
+    // Assert
+    act.Should().Throw<ArgumentException>()
+      .WithMessage("Invalid move for the piece.");
+  }
+
+  [Fact]
+  public void Move_ForNonValidQueenSideCastling_ShouldThrowArgumentException()
+  {
+    // Arrange
+    var board = new Chessboard();
+    board.RemovePiece("b1"); // Remove white knight
+
+    // Act
+    Action act = () => board.Move("e1", "c1"); // Attempt queen side castling with blocked path
+
+    // Assert
+    act.Should().Throw<ArgumentException>()
+      .WithMessage("Invalid move for the piece.");
+  }
+
+  //En passant tests
+  [Fact]
+  public void Move_ForEnPassantWhite_ShouldCapturePawn()
+  {
+    // Arrange
+    var board = new Chessboard();
+    board.Move("e2", "e4"); // Move white pawn to e4
+    board.Move("a7", "a5"); // Move black pawn to a5
+    board.Move("e4", "e5"); // Move white pawn to e4
+    board.Move("d7", "d5"); // Move black pawn to a5
+    var piece = board.GetSquare("d5")!.Piece!;
+
+    // Act
+    board.Move("e5", "d6"); // White pawn captures black pawn en passant
+
+    // Assert
+    board.GetSquare("d6")!.Piece.Should().BeOfType<Pawn>();
+    board.GetSquare("d5")!.Piece.Should().BeNull();
+    board.GetSquare("e5")!.Piece.Should().BeNull();
+    board.Pieces.Should().NotContain(piece);
+  }
+  [Fact]
+  public void Move_ForEnPassantBlack_ShouldCapturePawn()
+  {
+    // Arrange
+    var board = new Chessboard();
+    board.Move("h2", "h4"); // Move white pawn to h4
+    board.Move("e7", "e5"); // Move black pawn to e5
+    board.Move("h4", "h5"); // Move white pawn to h5
+    board.Move("e5", "e4"); // Move black pawn to e4
+    board.Move("d2", "d4"); // Move black pawn to a5
+    var piece = board.GetSquare("d4")!.Piece!;
+
+    // Act
+    board.Move("e4", "d3"); // Black pawn captures black pawn en passant
+
+    // Assert
+    board.GetSquare("d3")!.Piece.Should().BeOfType<Pawn>();
+    board.GetSquare("e4")!.Piece.Should().BeNull();
+    board.GetSquare("d4")!.Piece.Should().BeNull();
+    board.Pieces.Should().NotContain(piece);
+  }
+  [Fact]
+  public void Move_ForNonValidEnPassant_ShouldThrowException()
+  {
+    // Arrange
+    var board = new Chessboard();
+    board.Move("h2", "h4"); // Move white pawn to h4
+    board.Move("e7", "e5"); // Move black pawn to e5
+    board.Move("h4", "h5"); // Move white pawn to h5
+    board.Move("e5", "e4"); // Move black pawn to e4
+    board.Move("d2", "d4"); // Move black pawn to a5
+
+    board.Move("f7", "f6"); // Move black pawn to f6
+    board.Move("h5", "h6"); // Move white pawn to h3
+    // Act
+    Action act = () => board.Move("e4", "d3"); // Blac pawn tries to captures black pawn en passant
+
+    // Assert
+    act.Should().Throw<ArgumentException>()
+      .WithMessage("Invalid move for the piece.");
+  }
 }

@@ -78,13 +78,12 @@ public class Chessboard
     }
 
   }
-
   // * Implement the constructor that accepts a FEN string
   public Chessboard(string fen)
   {
     throw new NotImplementedException("Constructor with FEN string is not implemented yet.");
   }
-  // ! Special moves
+
   // TODO: Implement en passant
   // TODO: Implement promotion
   // TODO: Check and checkmate detection

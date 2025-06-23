@@ -47,13 +47,13 @@ public class Pawn : Piece
     }
 
     // En passant
-    if (board.LastMove.from != null && board.LastMove.to != null)
+    if (board.LastMove.from != null && board.LastMove.to != null && board.LastMove.to.Piece is Pawn)
     {
       var lastFrom = board.LastMove.from;
       var lastTo = board.LastMove.to;
 
       // Is last move a pawn
-      if (lastFrom.Piece is Pawn lastPawn && lastPawn.White != this.White &&
+      if (lastTo.Piece is Pawn lastPawn && lastPawn.White != this.White &&
           Math.Abs(lastFrom.Row - lastTo.Row) == 2 && lastFrom.Column == lastTo.Column)
       {
         // Czy pionek jest obok nas
