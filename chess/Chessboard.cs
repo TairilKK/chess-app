@@ -7,6 +7,7 @@ public class Chessboard
 {
   public List<Piece> Pieces { get; set; }
   public Square[] Squares { get; set; }
+  private bool _whiteToMove = true;
   public Chessboard()
   {
     Pieces = new List<Piece>();
@@ -77,6 +78,12 @@ public class Chessboard
       throw new ArgumentException("Both squares must be part of the chessboard.");
     }
     var piece = from.Piece ?? throw new ArgumentException("No piece to move from the specified square.");
+    if (piece.White != _whiteToMove)
+    {
+      var color = _whiteToMove ? "white" : "black";
+      throw new ArgumentException($"It's {color} turn to move.");
+    }
+
     var moves = piece.GetPseudoLegalMoves(from, this);
     if (!moves.Contains(to))
     {
@@ -114,6 +121,7 @@ public class Chessboard
     }
     to.Piece = piece;
     from.Piece = null;
+    _whiteToMove = !_whiteToMove;
   }
   private void Move((int row, int col) from, (int row, int col) to)
   {
@@ -280,7 +288,7 @@ public class Chessboard
 
     return rowString;
   }
-  private string Display(bool fromWhite = true)
+  private string SideToString(bool fromWhite = true)
   {
     var boardString = "";
 
@@ -303,11 +311,11 @@ public class Chessboard
   }
   public string BlackSideToString()
   {
-    return Display(false);
+    return SideToString(false);
   }
   public string WhiteSideToString()
   {
-    return Display(true);
+    return SideToString(true);
   }
   private string Padding()
   {
