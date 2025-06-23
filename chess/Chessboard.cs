@@ -9,59 +9,74 @@ public class Chessboard
   public Square[] Squares { get; set; }
   private bool _whiteToMove = true;
   public (Square from, Square to) LastMove = (null!, null!);
-  public Chessboard()
+
+  public Chessboard(bool empty = false)
   {
     Pieces = new List<Piece>();
     Squares = new Square[64];
-    for (int r = 0; r < 8; r++)
+    if (!empty)
     {
-      for (int c = 0; c < 8; c++)
+      for (int r = 0; r < 8; r++)
       {
-        if (r == 0 || r == 7)
+        for (int c = 0; c < 8; c++)
         {
-          switch (c)
+          if (r == 0 || r == 7)
           {
-            case 0:
-            case 7:
-              Squares[r * 8 + c] = new Square(r, c, new Rook(r == 0));
-              Pieces.Add(Squares[r * 8 + c].Piece!);
-              break;
-            case 1:
-            case 6:
-              Squares[r * 8 + c] = new Square(r, c, new Knight(r == 0));
-              Pieces.Add(Squares[r * 8 + c].Piece!);
-              break;
-            case 2:
-            case 5:
-              Squares[r * 8 + c] = new Square(r, c, new Bishop(r == 0));
-              Pieces.Add(Squares[r * 8 + c].Piece!);
-              break;
-            case 3:
-              Squares[r * 8 + c] = new Square(r, c, new Queen(r == 0));
-              Pieces.Add(Squares[r * 8 + c].Piece!);
-              break;
-            default:
-              Squares[r * 8 + c] = new Square(r, c, new King(r == 0));
-              Pieces.Add(Squares[r * 8 + c].Piece!);
-              break;
+            switch (c)
+            {
+              case 0:
+              case 7:
+                Squares[r * 8 + c] = new Square(r, c, new Rook(r == 0));
+                Pieces.Add(Squares[r * 8 + c].Piece!);
+                break;
+              case 1:
+              case 6:
+                Squares[r * 8 + c] = new Square(r, c, new Knight(r == 0));
+                Pieces.Add(Squares[r * 8 + c].Piece!);
+                break;
+              case 2:
+              case 5:
+                Squares[r * 8 + c] = new Square(r, c, new Bishop(r == 0));
+                Pieces.Add(Squares[r * 8 + c].Piece!);
+                break;
+              case 3:
+                Squares[r * 8 + c] = new Square(r, c, new Queen(r == 0));
+                Pieces.Add(Squares[r * 8 + c].Piece!);
+                break;
+              default:
+                Squares[r * 8 + c] = new Square(r, c, new King(r == 0));
+                Pieces.Add(Squares[r * 8 + c].Piece!);
+                break;
+            }
+          }
+          else if (r == 1)
+          {
+            Squares[r * 8 + c] = new Square(r, c, new Pawn(true));
+            Pieces.Add(Squares[r * 8 + c].Piece!);
+          }
+          else if (r == 6)
+          {
+            Squares[r * 8 + c] = new Square(r, c, new Pawn(false));
+            Pieces.Add(Squares[r * 8 + c].Piece!);
+          }
+          else
+          {
+            Squares[r * 8 + c] = new Square(r, c);
           }
         }
-        else if (r == 1)
-        {
-          Squares[r * 8 + c] = new Square(r, c, new Pawn(true));
-          Pieces.Add(Squares[r * 8 + c].Piece!);
-        }
-        else if (r == 6)
-        {
-          Squares[r * 8 + c] = new Square(r, c, new Pawn(false));
-          Pieces.Add(Squares[r * 8 + c].Piece!);
-        }
-        else
+      }
+    }
+    else
+    {
+      for (int r = 0; r < 8; r++)
+      {
+        for (int c = 0; c < 8; c++)
         {
           Squares[r * 8 + c] = new Square(r, c);
         }
       }
     }
+
   }
 
   // * Implement the constructor that accepts a FEN string
